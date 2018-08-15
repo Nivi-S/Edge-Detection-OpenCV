@@ -1,0 +1,70 @@
+# OpenCV program to perform Edge detection in real time
+# import libraries of python OpenCV 
+import cv2 
+import numpy as np
+
+img_counter = 0
+###menu 
+##back = cv2.imread();
+##cv2.putText(back, "press ESC to exit",(10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (200,200,50), 2)
+##cv2.putText(back, "press SPACE to capture",(10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (200,200,50), 2)
+##cv2.imshow('Menu', back)
+
+# capture frames from a camera
+cap = cv2.VideoCapture(0)
+
+# loop runs if capturing has been initialized
+while(1):
+ 
+    # reads frames from a camera
+    ret, frame = cap.read()
+ 
+    # converting BGR to HSV
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+     
+    # define range of red color in HSV
+    lower_red = np.array([30,150,50])
+    upper_red = np.array([255,255,180])
+     
+    # create a red HSV colour boundary and 
+    # threshold HSV image
+    mask = cv2.inRange(hsv, lower_red, upper_red)
+ 
+    # Bitwise-AND mask and original image
+    res = cv2.bitwise_and(frame,frame, mask = mask)
+ 
+    # finds edges in the input image image and
+    # marks them in the output map edges
+
+    edges = cv2.Canny(frame,200,10)
+    edges = cv2.inrange(imgHSV, cvScalar(0, 0, 0, 0), cvScalar(180, 255, 30, 0), imgThreshold);
+
+    
+    ##edges = cv2.Canny(frame,120,500) #frame36
+    ##edges = cv2.Canny(frame,120,10) #ieye
+    ##edges = cv2.Canny(frame,100,200) 
+
+    # Display edges in a frame
+    cv2.imshow('Edge-detected',edges)
+    # Display an original image
+    cv2.imshow('Original',frame)
+
+
+    # Wait for Esc key to stop
+    k = cv2.waitKey(5) & 0xFF
+    if k == 27:
+        break
+    elif k%256 == 32:
+        # cpture images when SPACE pressed
+        org_name = "opencv_frame_{}.png".format(img_counter)
+        cv2.imwrite(org_name, frame)
+        edg_name = "opencv_edge_{}.png".format(img_counter)
+        cv2.imwrite(edg_name, edges)
+        img_counter += 1
+
+    
+# Close the window
+cap.release()
+ 
+# De-allocate any associated memory usage
+cv2.destroyAllWindows() 
